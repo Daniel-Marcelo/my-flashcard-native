@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity, FlatList } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, router } from "expo-router";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -58,9 +58,17 @@ const DeckDetailScreen = () => {
         contentContainerStyle={styles.list}
       />
 
-      <TouchableOpacity style={styles.addButton}>
-        <ThemedText style={styles.addButtonText}>+ Add Flashcard</ThemedText>
-      </TouchableOpacity>
+      <ThemedView style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.reviewButton]}
+          onPress={() => router.push(`/deck/${id}/review`)}
+        >
+          <ThemedText style={styles.buttonText}>Start Review</ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, styles.addButton]}>
+          <ThemedText style={styles.buttonText}>+ Add Flashcard</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
     </ThemedView>
   );
 };
@@ -95,14 +103,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
   },
-  addButton: {
-    backgroundColor: "#0a7ea4",
+  buttonContainer: {
+    gap: 10,
+  },
+  button: {
     height: 50,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
   },
-  addButtonText: {
+  reviewButton: {
+    backgroundColor: "#4a90e2",
+  },
+  addButton: {
+    backgroundColor: "#0a7ea4",
+  },
+  buttonText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
