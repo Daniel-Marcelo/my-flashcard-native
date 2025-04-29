@@ -22,10 +22,11 @@ const DeckItem = ({ deck }: { deck: Deck }) => (
   <TouchableOpacity
     style={styles.deckItem}
     // onPress={() => router.push(`/deck/${deck.id}`)}
-    onPress={console.log}
   >
     <ThemedView style={styles.deckContent}>
-      <ThemedText type="defaultSemiBold">{deck.name}</ThemedText>
+      <ThemedText type="defaultSemiBold" style={styles.deckName}>
+        {deck.name}
+      </ThemedText>
       <ThemedText style={styles.cardCount}>
         {deck.cardCount} {deck.cardCount === 1 ? "card" : "cards"}
       </ThemedText>
@@ -41,7 +42,6 @@ const DashboardScreen = () => {
         <TouchableOpacity
           style={styles.addButton}
           //   onPress={() => router.push("/deck/new")}
-          onPress={console.log}
         >
           <ThemedText style={styles.addButtonText}>+ New Deck</ThemedText>
         </TouchableOpacity>
@@ -80,16 +80,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   list: {
-    gap: 10,
+    gap: 12,
   },
   deckItem: {
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 10,
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
   },
   deckContent: {
-    gap: 5,
+    gap: 4,
+  },
+  deckName: {
+    fontSize: 16,
+    color: "#333",
   },
   cardCount: {
     fontSize: 14,
