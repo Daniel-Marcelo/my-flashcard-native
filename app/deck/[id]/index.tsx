@@ -65,7 +65,10 @@ const DeckDetailScreen = () => {
         >
           <ThemedText style={styles.buttonText}>Start Review</ThemedText>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.addButton]}>
+        <TouchableOpacity
+          style={[styles.button, styles.addButton]}
+          onPress={() => router.push(`/deck/${id}/add`)}
+        >
           <ThemedText style={styles.buttonText}>+ Add Flashcard</ThemedText>
         </TouchableOpacity>
       </ThemedView>
