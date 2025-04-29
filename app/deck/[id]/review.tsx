@@ -30,8 +30,9 @@ type Flashcard = {
   back: string;
 };
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const CARD_WIDTH = SCREEN_WIDTH - 40;
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const CARD_WIDTH = Math.min(SCREEN_WIDTH - 40, 400);
+const CARD_HEIGHT = Math.min(SCREEN_HEIGHT * 0.4, 300);
 
 const AnimatedFlashcard = ({
   flashcard,
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     width: CARD_WIDTH,
-    height: CARD_WIDTH * 0.6,
+    height: CARD_HEIGHT,
   },
   card: {
     position: "absolute",
