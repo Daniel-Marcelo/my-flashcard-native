@@ -130,9 +130,20 @@ const ReviewSummary = ({ results }: { results: ReviewResult[] }) => {
         ))}
       </ThemedView>
 
-      <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-        <ThemedText style={styles.buttonText}>Back to Deck</ThemedText>
-      </TouchableOpacity>
+      <ThemedView style={styles.summaryButtonsContainer}>
+        <TouchableOpacity
+          style={styles.summaryButton}
+          onPress={() => router.back()}
+        >
+          <ThemedText style={styles.buttonText}>Back to Deck</ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.summaryButton}
+          onPress={() => router.push("/dashboard")}
+        >
+          <ThemedText style={styles.buttonText}>My Decks</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
     </ThemedView>
   );
 };
@@ -291,6 +302,7 @@ const styles = StyleSheet.create({
   resultsContainer: {
     flex: 1,
     gap: 10,
+    marginBottom: 20,
   },
   resultsTitle: {
     marginBottom: 10,
@@ -317,6 +329,19 @@ const styles = StyleSheet.create({
   },
   incorrectText: {
     color: "#ff4444",
+  },
+  summaryButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+  },
+  summaryButton: {
+    backgroundColor: "#007AFF",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    minWidth: 120,
+    alignItems: "center",
   },
 });
 
