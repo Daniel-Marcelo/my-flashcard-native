@@ -21,7 +21,7 @@ type Deck = {
 const DeckItem = ({ deck }: { deck: Deck }) => (
   <TouchableOpacity
     style={styles.deckItem}
-    // onPress={() => router.push(`/deck/${deck.id}`)}
+    onPress={() => router.push(`/deck/${deck.id}`)}
   >
     <ThemedView style={styles.deckContent}>
       <ThemedText type="defaultSemiBold" style={styles.deckName}>
@@ -41,7 +41,7 @@ const DashboardScreen = () => {
         <ThemedText type="title">My Decks</ThemedText>
         <TouchableOpacity
           style={styles.addButton}
-          //   onPress={() => router.push("/deck/new")}
+          onPress={() => router.push("/deck/new")}
         >
           <ThemedText style={styles.addButtonText}>+ New Deck</ThemedText>
         </TouchableOpacity>
