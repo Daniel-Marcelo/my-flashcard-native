@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, router } from "expo-router";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -28,6 +28,11 @@ type Flashcard = {
   id: string;
   front: string;
   back: string;
+};
+
+type ReviewResult = {
+  flashcard: Flashcard;
+  remembered: boolean;
 };
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -87,22 +92,68 @@ const AnimatedFlashcard = ({
   );
 };
 
+const ReviewSummary = ({ results }: { results: ReviewResult[] }) => {
+  const correctCount = results.filter((r) => r.remembered).length;
+  const totalCount = results.length;
+  const percentage = Math.round((correctCount / totalCount) * 100);
+
+  return (
+    <ThemedView style={styles.summaryContainer}>
+      <ThemedText type="title" style={styles.summaryTitle}>
+        Review Complete!
+      </ThemedText>
+
+      <ThemedView style={styles.statsContainer}>
+        <ThemedText style={styles.statsText}>
+          You got {correctCount} out of {totalCount} correct ({percentage}%)
+        </ThemedText>
+      </ThemedView>
+
+      <ThemedView style={styles.resultsContainer}>
+        <ThemedText type="subtitle" style={styles.resultsTitle}>
+          Results:
+        </ThemedText>
+        {results.map((result, index) => (
+          <ThemedView key={result.flashcard.id} style={styles.resultItem}>
+            <ThemedText style={styles.resultText}>
+              {result.flashcard.front} → {result.flashcard.back}
+            </ThemedText>
+            <ThemedText
+              style={[
+                styles.resultStatus,
+                result.remembered ? styles.correctText : styles.incorrectText,
+              ]}
+            >
+              {result.remembered ? "✓" : "✕"}
+            </ThemedText>
+          </ThemedView>
+        ))}
+      </ThemedView>
+
+      <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+        <ThemedText style={styles.buttonText}>Back to Deck</ThemedText>
+      </TouchableOpacity>
+    </ThemedView>
+  );
+};
+
 const ReviewScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [resetFlip, setResetFlip] = useState(false);
   const [showCard, setShowCard] = useState(true);
+  const [reviewResults, setReviewResults] = useState<ReviewResult[]>([]);
+  const [isComplete, setIsComplete] = useState(false);
 
   // TODO: Fetch actual deck data using the id
   const currentCard = MOCK_FLASHCARDS[currentCardIndex];
 
   const handleMark = (remembered: boolean) => {
-    // TODO: Save the user's response to the backend
-    console.log(
-      `Card ${currentCard.id} marked as ${
-        remembered ? "remembered" : "not remembered"
-      }`
-    );
+    // Save the result
+    setReviewResults((prev) => [
+      ...prev,
+      { flashcard: currentCard, remembered },
+    ]);
 
     // Move to next card
     if (currentCardIndex < MOCK_FLASHCARDS.length - 1) {
@@ -112,10 +163,13 @@ const ReviewScreen = () => {
         setShowCard(true);
       }, 50);
     } else {
-      // TODO: Handle end of review session
-      console.log("Review session completed");
+      setIsComplete(true);
     }
   };
+
+  if (isComplete) {
+    return <ReviewSummary results={reviewResults} />;
+  }
 
   return (
     <ThemedView style={styles.container}>
@@ -217,6 +271,52 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 24,
     fontWeight: "bold",
+  },
+  summaryContainer: {
+    flex: 1,
+    padding: 20,
+  },
+  summaryTitle: {
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  statsContainer: {
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  statsText: {
+    fontSize: 18,
+    color: "#666",
+  },
+  resultsContainer: {
+    flex: 1,
+    gap: 10,
+  },
+  resultsTitle: {
+    marginBottom: 10,
+  },
+  resultItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "white",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+  },
+  resultText: {
+    fontSize: 16,
+  },
+  resultStatus: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  correctText: {
+    color: "#4CAF50",
+  },
+  incorrectText: {
+    color: "#ff4444",
   },
 });
 
