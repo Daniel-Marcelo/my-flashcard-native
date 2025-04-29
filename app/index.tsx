@@ -1,4 +1,5 @@
-import { Image, StyleSheet, Platform } from "react-native";
+import { Image, StyleSheet, Platform, TouchableOpacity } from "react-native";
+import { router } from "expo-router";
 
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -46,6 +47,12 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
+      <TouchableOpacity
+        style={styles.signUpButton}
+        onPress={() => router.push("/signup")}
+      >
+        <ThemedText style={styles.signUpButtonText}>Sign Up</ThemedText>
+      </TouchableOpacity>
     </ParallaxScrollView>
   );
 }
@@ -66,5 +73,18 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: "absolute",
+  },
+  signUpButton: {
+    backgroundColor: "#0a7ea4",
+    height: 50,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  signUpButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
