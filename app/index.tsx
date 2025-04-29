@@ -6,7 +6,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
-export default function HomeScreen() {
+const HomeScreen = () => {
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
@@ -47,15 +47,23 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
-      <TouchableOpacity
-        style={styles.signUpButton}
-        onPress={() => router.push("/signup")}
-      >
-        <ThemedText style={styles.signUpButtonText}>Sign Up</ThemedText>
-      </TouchableOpacity>
+      <ThemedView style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/login")}
+        >
+          <ThemedText style={styles.buttonText}>Login</ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.secondaryButton]}
+          onPress={() => router.push("/signup")}
+        >
+          <ThemedText style={styles.buttonText}>Sign Up</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
     </ParallaxScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -74,17 +82,25 @@ const styles = StyleSheet.create({
     left: 0,
     position: "absolute",
   },
-  signUpButton: {
+  buttonContainer: {
+    gap: 10,
+    marginTop: 20,
+  },
+  button: {
     backgroundColor: "#0a7ea4",
     height: 50,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
   },
-  signUpButtonText: {
+  secondaryButton: {
+    backgroundColor: "#4a90e2",
+  },
+  buttonText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
   },
 });
+
+export default HomeScreen;
