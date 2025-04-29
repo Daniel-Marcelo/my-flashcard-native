@@ -37,6 +37,7 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ title: "Login" }} />
         <Stack.Screen name="signup" options={{ title: "Sign Up" }} />
+        <Stack.Screen name="dashboard" options={{ title: "My Decks" }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

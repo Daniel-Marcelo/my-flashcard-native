@@ -69,7 +69,7 @@ const LoginScreen = () => {
   const onSubmit = (data: FormData) => {
     // TODO: Implement actual login logic here
     console.log("Login with:", data);
-    router.replace("/");
+    router.replace("/dashboard");
   };
 
   return (
