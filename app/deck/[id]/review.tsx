@@ -6,6 +6,7 @@ import Animated, {
   withSpring,
   interpolate,
   useSharedValue,
+  withTiming,
 } from "react-native-reanimated";
 
 import { ThemedText } from "@/components/ThemedText";
@@ -32,8 +33,13 @@ type Flashcard = {
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CARD_WIDTH = SCREEN_WIDTH - 40;
 
-const AnimatedFlashcard = ({ flashcard }: { flashcard: Flashcard }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+const AnimatedFlashcard = ({
+  flashcard,
+  resetFlip,
+}: {
+  flashcard: Flashcard;
+  resetFlip: boolean;
+}) => {
   const flipProgress = useSharedValue(0);
 
   const frontAnimatedStyle = useAnimatedStyle(() => {
@@ -53,12 +59,16 @@ const AnimatedFlashcard = ({ flashcard }: { flashcard: Flashcard }) => {
   });
 
   const handlePress = () => {
-    setIsFlipped(!isFlipped);
-    flipProgress.value = withSpring(isFlipped ? 0 : 1, {
+    flipProgress.value = withSpring(flipProgress.value === 0 ? 1 : 0, {
       damping: 15,
       stiffness: 100,
     });
   };
+
+  // Reset the card when resetFlip changes
+  if (resetFlip) {
+    flipProgress.value = withTiming(0, { duration: 300 });
+  }
 
   return (
     <TouchableOpacity onPress={handlePress} activeOpacity={1}>
@@ -79,9 +89,32 @@ const AnimatedFlashcard = ({ flashcard }: { flashcard: Flashcard }) => {
 const ReviewScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [resetFlip, setResetFlip] = useState(false);
+  const [showCard, setShowCard] = useState(true);
 
   // TODO: Fetch actual deck data using the id
   const currentCard = MOCK_FLASHCARDS[currentCardIndex];
+
+  const handleMark = (remembered: boolean) => {
+    // TODO: Save the user's response to the backend
+    console.log(
+      `Card ${currentCard.id} marked as ${
+        remembered ? "remembered" : "not remembered"
+      }`
+    );
+
+    // Move to next card
+    if (currentCardIndex < MOCK_FLASHCARDS.length - 1) {
+      setShowCard(false);
+      setTimeout(() => {
+        setCurrentCardIndex(currentCardIndex + 1);
+        setShowCard(true);
+      }, 50);
+    } else {
+      // TODO: Handle end of review session
+      console.log("Review session completed");
+    }
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -92,7 +125,28 @@ const ReviewScreen = () => {
       </ThemedView>
 
       <ThemedView style={styles.cardWrapper}>
-        <AnimatedFlashcard flashcard={currentCard} />
+        {showCard && (
+          <AnimatedFlashcard
+            key={currentCard.id}
+            flashcard={currentCard}
+            resetFlip={resetFlip}
+          />
+        )}
+      </ThemedView>
+
+      <ThemedView style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.wrongButton]}
+          onPress={() => handleMark(false)}
+        >
+          <ThemedText style={styles.buttonText}>✕</ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.correctButton]}
+          onPress={() => handleMark(true)}
+        >
+          <ThemedText style={styles.buttonText}>✓</ThemedText>
+        </TouchableOpacity>
       </ThemedView>
     </ThemedView>
   );
@@ -138,6 +192,30 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: 24,
     textAlign: "center",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 20,
+    marginTop: 30,
+  },
+  button: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  wrongButton: {
+    backgroundColor: "#ff4444",
+  },
+  correctButton: {
+    backgroundColor: "#4CAF50",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
   },
 });
 
